@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import sys
 import json
 import logging
 import logging.handlers
@@ -27,6 +28,12 @@ def main():
       globalhash = data.get('h')
       logger.info(globalhash)
 
-context = daemon.DaemonContext()
+lock = lockfile.FileLock('/var/run/gogogon-consumer.pid')
+if lock.is_locked(): sys.exit()
+
+context = daemon.DaemonContext(
+  pidfile=lock
+)
+
 with context:
   main()

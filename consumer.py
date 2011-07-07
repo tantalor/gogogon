@@ -7,32 +7,47 @@ import logging
 import logging.handlers
 import daemon
 import lockfile
+import signal
+import subprocess
 
 def main():
-  formatter = logging.Formatter('%(asctime)s %(message)s', '%Y-%m-%d %H:%M:%S')
+  global logger, curl
   
+  formatter = logging.Formatter('%(process)d %(levelname)s %(created)d %(message)s', '%Y-%m-%d %H:%M:%S')
+
   handler = logging.handlers.TimedRotatingFileHandler(
     '/var/log/gogogon/consumer.log', 'midnight', 1, backupCount=3
   )
   handler.setFormatter(formatter)
-  
+
   logger = logging.getLogger()
   logger.addHandler( handler )
-  logger.setLevel(logging.INFO)
+  logger.setLevel(logging.DEBUG)
   
-  fh = os.popen("curl --no-buffer -s http://bitly.measuredvoice.com/usa.gov")
+  logger.debug("starting up")
+  cmd = ("curl", "--no-buffer", "-s", "http://bitly.measuredvoice.com/usa.gov")
+  curl = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+  
   while 1:
-    line = fh.readline().lstrip()
+    line = curl.stdout.readline().lstrip()
     if line:
       data = json.loads(line)
       globalhash = data.get('h')
       logger.info(globalhash)
 
+def shutdown(*args):
+  global logger, curl
+  
+  logger.debug("shutting down")
+  curl.terminate()
+
+signal.signal(signal.SIGINT, shutdown)
+
 lock = lockfile.FileLock('/var/run/gogogon-consumer.pid')
 if lock.is_locked(): sys.exit()
 
 context = daemon.DaemonContext(
-  pidfile=lock
+  pidfile=lock,
 )
 
 with context:

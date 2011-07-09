@@ -32,7 +32,7 @@ def main():
     line = curl.stdout.readline().lstrip()
     if line:
       data = json.loads(line)
-      globalhash = data.get('h')
+      globalhash = data.get('g')
       logger.info(globalhash)
 
 def shutdown(*args):

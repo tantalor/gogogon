@@ -32,8 +32,10 @@ def main():
     line = curl.stdout.readline().lstrip()
     if line:
       data = json.loads(line)
+      print data
       globalhash = data.get('g')
-      logger.info(globalhash)
+      url = data.get('u')
+      logger.info("%s %s" % (globalhash, url))
 
 def shutdown(*args):
   global logger, curl

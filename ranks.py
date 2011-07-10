@@ -7,6 +7,7 @@ import subprocess
 import bitly
 from domain import domain
 import json
+import csv
 
 GROUPSIZE = 10
 
@@ -40,9 +41,30 @@ def main():
     hashes = details.keys()[i*GROUPSIZE:i*GROUPSIZE+GROUPSIZE]
     # lookup titles
     for info in bitly.info(*hashes):
+      if not info['title']: continue
       details[info['hash']]['title']=info['title']
   
-  print "\n".join(json.dumps(d) for d in details.values())
+  # output files
+  json_file = "/var/log/gogogon/ranks/%04d-%02d-%02d.json" % \
+    (yesterday.year, yesterday.month, yesterday.day)
+  csv_file = "/var/log/gogogon/ranks/%04d-%02d-%02d.csv" % \
+    (yesterday.year, yesterday.month, yesterday.day)
+    
+  # write json
+  json.dump(details.values(), file(json_file, 'w'))
+  
+  # write csv
+  csv_writer = csv.writer(file(csv_file, 'w'))
+  csv_writer.writerow(["Long URL", "Page Title", "Clicks", "Agency Domain", "Global hash"])
+  for record in details.values():
+    if not 'title' in record: continue
+    csv_writer.writerow([
+      record['u'],
+      record['title'].encode('utf8'),
+      record['global_clicks'],
+      record['agency'],
+      record['global_hash'],
+    ])
 
 if __name__ == '__main__':
   main()

@@ -5,8 +5,6 @@ import sys
 import json
 import logging
 import logging.handlers
-import daemon
-import lockfile
 import signal
 import subprocess
 
@@ -28,11 +26,12 @@ def main():
   cmd = ("curl", "--no-buffer", "-s", "http://bitly.measuredvoice.com/usa.gov")
   curl = subprocess.Popen(cmd, stdout=subprocess.PIPE)
   
+  signal.signal(signal.SIGINT, shutdown)
+  
   while 1:
     line = curl.stdout.readline().lstrip()
     if line:
       data = json.loads(line)
-      print data
       globalhash = data.get('g')
       url = data.get('u')
       logger.info("%s %s" % (globalhash, url))
@@ -43,14 +42,5 @@ def shutdown(*args):
   logger.debug("shutting down")
   curl.terminate()
 
-signal.signal(signal.SIGINT, shutdown)
-
-lock = lockfile.FileLock('/var/run/gogogon-consumer.pid')
-if lock.is_locked(): sys.exit()
-
-context = daemon.DaemonContext(
-  pidfile=lock,
-)
-
-with context:
+if __name__ == '__main__':
   main()

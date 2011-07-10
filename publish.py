@@ -21,7 +21,7 @@ def main():
   if not os.path.exists(logfile): return
   
   # sort and uniq the log
-  cmd = 'tail -10 %s | grep INFO | cut -f 4-5 -d " " | sort | uniq -c' % logfile
+  cmd = 'grep INFO %s | cut -f 4-5 -d " " | sort | uniq -c' % logfile
   pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
   
   # collect up global hashes and click counts

@@ -29,6 +29,9 @@ def main():
   signal.signal(signal.SIGINT, shutdown)
   
   while 1:
+    if curl.poll():
+      logger.debug("shutting down")
+      sys.exit(-1)
     line = curl.stdout.readline().lstrip()
     if line:
       data = json.loads(line)

@@ -49,14 +49,18 @@ def main():
     (yesterday.year, yesterday.month, yesterday.day)
   csv_file = "/var/log/gogogon/ranks/%04d-%02d-%02d.csv" % \
     (yesterday.year, yesterday.month, yesterday.day)
-    
+  
+  # sort by global clicks descending
+  records = details.values()
+  records.sort(key=lambda x: x["global_clicks"], reverse=True)  
+
   # write json
-  json.dump(details.values(), file(json_file, 'w'))
+  json.dump(records, file(json_file, 'w'))
   
   # write csv
   csv_writer = csv.writer(file(csv_file, 'w'))
   csv_writer.writerow(["Long URL", "Page Title", "Clicks", "Agency Domain", "Global hash"])
-  for record in details.values():
+  for record in records:
     if not 'title' in record: continue
     csv_writer.writerow([
       record['u'],

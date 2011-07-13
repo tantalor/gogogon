@@ -33,6 +33,13 @@ Processes
  * `consumer.py` continuously reads the feed and writes daily logs of all clicks
  * `ranks.py` daily reads the previous day's log file and generates the output files
 
+Requirements
+============
+
+ * [python 2.6](http://www.python.org/download/releases/2.6/)
+ * [supervisord 3.0a10](http://supervisord.org/)
+ * [pycurl 7.19.0](http://pycurl.sourceforge.net/)
+
 Licence
 =======
 

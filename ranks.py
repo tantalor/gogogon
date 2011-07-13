@@ -22,13 +22,13 @@ def main():
   if not os.path.exists(logfile): return
   
   # sort and uniq the log
-  cmd = 'grep INFO %s | cut -f 4-5 -d " " | sort | uniq -c' % logfile
+  cmd = 'grep INFO %s | cut -f 4- -d " " | sort | uniq -c' % logfile
   pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
   
   # collect up global hashes and click counts
   details = dict()
   for line in pipe.stdout:
-    (count, global_hash, url) = line.strip().split()
+    (count, global_hash, url) = line.strip().split(' ', 2)
     details[global_hash] = dict(
       u=url,
       global_clicks=count,

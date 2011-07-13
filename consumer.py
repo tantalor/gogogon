@@ -9,7 +9,7 @@ import signal
 import pycurl
 
 def main():
-  global logger, curl
+  global logger
   
   formatter = logging.Formatter('%(process)d %(levelname)s %(created)d %(message)s', '%Y-%m-%d %H:%M:%S')
 
@@ -38,10 +38,10 @@ def main():
   curl.perform()
 
 def shutdown(*args):
-  global logger, curl
-  
+  global logger
+
   logger.debug("shutting down")
-  sys.exit(-1)
+  sys.exit()
 
 if __name__ == '__main__':
   main()

@@ -15,10 +15,10 @@ def main():
   today = datetime.datetime.today()
   one_day = datetime.timedelta(1)
   yesterday = today - one_day
+  ymd = "%04d-%02d-%02d" % (yesterday.year, yesterday.month, yesterday.day)
   
   # find yesterday's log
-  logfile = "/var/log/gogogon/consumer.log.%04d-%02d-%02d" % \
-    (yesterday.year, yesterday.month, yesterday.day)
+  logfile = "/var/log/gogogon/consumer.log.%s" % ymd
   if not os.path.exists(logfile): return
   
   # sort and uniq the log
@@ -45,10 +45,8 @@ def main():
       details[info['hash']]['title']=info['title']
   
   # output files
-  json_file = "/var/log/gogogon/ranks/%04d-%02d-%02d.json" % \
-    (yesterday.year, yesterday.month, yesterday.day)
-  csv_file = "/var/log/gogogon/ranks/%04d-%02d-%02d.csv" % \
-    (yesterday.year, yesterday.month, yesterday.day)
+  json_file = "/var/log/gogogon/ranks/%s.json" % ymd
+  csv_file = "/var/log/gogogon/ranks/%s.csv" % ymd
   
   # sort by global clicks descending
   records = details.values()

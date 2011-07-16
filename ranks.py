@@ -49,6 +49,7 @@ def main():
   # output files
   json_file = os.path.join(RANKS_OUTPUT_DIR, "%s.json" % ymd)
   csv_file = os.path.join(RANKS_OUTPUT_DIR, "%s.csv" % ymd)
+  json_latest_file = os.path.join(RANKS_OUTPUT_DIR, "latest.json")
   
   # sort by global clicks descending
   records = details.values()
@@ -56,6 +57,7 @@ def main():
 
   # write json
   json.dump(records, file(json_file, 'w'))
+  json.dump(records[:10], file(json_latest_file, 'w'))
   
   # write csv
   csv_writer = csv.writer(file(csv_file, 'w'))

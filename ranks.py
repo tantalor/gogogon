@@ -10,6 +10,8 @@ import json
 import csv
 
 GROUPSIZE = 10
+LOG_INPUT_DIR = "/var/log/gogogon"
+RANKS_OUTPUT_DIR = os.path.join(LOG_INPUT_DIR, "ranks")
 
 def main():
   today = datetime.datetime.today()
@@ -18,7 +20,7 @@ def main():
   ymd = "%04d-%02d-%02d" % (yesterday.year, yesterday.month, yesterday.day)
   
   # find yesterday's log
-  logfile = "/var/log/gogogon/consumer.log.%s" % ymd
+  logfile = os.path.join(LOG_INPUT_DIR, "consumer.log.%s" % ymd)
   if not os.path.exists(logfile): return
   
   # sort and uniq the log
@@ -45,8 +47,8 @@ def main():
       details[info['hash']]['title']=info['title']
   
   # output files
-  json_file = "/var/log/gogogon/ranks/%s.json" % ymd
-  csv_file = "/var/log/gogogon/ranks/%s.csv" % ymd
+  json_file = os.path.join(RANKS_OUTPUT_DIR, "%s.json" % ymd)
+  csv_file = os.path.join(RANKS_OUTPUT_DIR, "%s.csv" % ymd)
   
   # sort by global clicks descending
   records = details.values()

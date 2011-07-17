@@ -2,8 +2,11 @@ import smtplib
 import yaml
 import sys
 from supervisor.childutils import listener
+import os
 
-config = yaml.load(file('conf/listener.yaml', 'r'))
+localdir = os.path.dirname(__file__)
+config_file = os.path.join(localdir, 'conf', 'listener.yaml')
+config = yaml.load(file(config_file, 'r'))
 
 while 1:
   (header, payload) = listener.wait()

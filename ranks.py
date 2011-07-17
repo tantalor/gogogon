@@ -42,9 +42,14 @@ def main():
   for i in xrange(1+len(details)/GROUPSIZE):
     hashes = details.keys()[i*GROUPSIZE:i*GROUPSIZE+GROUPSIZE]
     # lookup titles
-    for info in bitly.info(*hashes):
-      if not info['title']: continue
-      details[info['hash']]['title']=info['title']
+    for item in bitly.info(hashes=hashes):
+      if not item['title']: continue
+      details[item['hash']]['title']=item['title']
+    # lookup yesterday's clicks
+    for item in bitly.clicks_by_day(hashes=hashes, days=2):
+      clicks = item['clicks'][1]['clicks']
+      if clicks > details[item['hash']]['global_clicks']:
+        details[item['hash']]['global_clicks'] = clicks
   
   # output files
   json_file = os.path.join(RANKS_OUTPUT_DIR, "%s.json" % ymd)

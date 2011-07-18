@@ -33,7 +33,7 @@ def main():
     (count, global_hash, url) = line.strip().split(' ', 2)
     details[global_hash] = dict(
       u=url,
-      global_clicks=count,
+      global_clicks=int(count),
       agency=domain(url),
       global_hash=global_hash,
     )
@@ -47,7 +47,7 @@ def main():
       details[item['hash']]['title']=item['title']
     # lookup yesterday's clicks
     for item in bitly.clicks_by_day(hashes=hashes, days=2):
-      clicks = item['clicks'][1]['clicks']
+      clicks = int(item['clicks'][1]['clicks'])
       if clicks > details[item['hash']]['global_clicks']:
         details[item['hash']]['global_clicks'] = clicks
   
@@ -58,7 +58,7 @@ def main():
   
   # sort by global clicks descending
   records = details.values()
-  records.sort(key=lambda x: x["global_clicks"], reverse=True)  
+  records.sort(key=lambda x: int(x["global_clicks"]), reverse=True)  
 
   # write json
   json.dump(records, file(json_file, 'w'))

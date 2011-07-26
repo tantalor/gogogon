@@ -14,11 +14,15 @@ LOG_INPUT_DIR = "/var/log/gogogon"
 RANKS_OUTPUT_DIR = os.path.join(LOG_INPUT_DIR, "ranks")
 
 def main():
-  today = datetime.datetime.today()
-  one_day = datetime.timedelta(1)
-  yesterday = today - one_day
-  ymd = "%04d-%02d-%02d" % (yesterday.year, yesterday.month, yesterday.day)
-  
+  if len(sys.argv) > 1:
+    ymd = sys.argv[1]
+  else:
+    today = datetime.datetime.today()
+    one_day = datetime.timedelta(1)
+    yesterday = today - one_day
+    ymd = "%04d-%02d-%02d" % (yesterday.year, yesterday.month, yesterday.day)
+  print ymd
+
   # find yesterday's log
   logfile = os.path.join(LOG_INPUT_DIR, "consumer.log.%s" % ymd)
   if not os.path.exists(logfile): return

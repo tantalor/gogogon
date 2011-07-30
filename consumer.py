@@ -41,6 +41,7 @@ def shutdown(*args):
   global logger
 
   logger.debug("shutting down")
+  logger.flush()
   sys.exit()
 
 if __name__ == '__main__':

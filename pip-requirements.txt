@@ -1,0 +1,4 @@
+distribute
+pycurl
+yolk
+supervisor

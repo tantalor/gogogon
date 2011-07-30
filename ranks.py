@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import datetime
 import os
@@ -10,6 +10,8 @@ import json
 import csv
 
 GROUPSIZE = 10
+file_name_prefix = "/var/log/gogogon/consumer.log"
+output_directory = "/var/log/gogogon/ranking"
 
 # Credit for this goes to nosklo: 
 #  http://stackoverflow.com/questions/635483/what-is-the-best-way-to-implement-nested-dictionaries-in-python/652284#652284
@@ -31,7 +33,7 @@ def main():
   yesterday = today - one_day
   
   # find yesterday's log
-  logfile = "/var/log/gogogon/consumer.log.%04d-%02d-%02d" % \
+  logfile = file_name_prefix + ".%04d-%02d-%02d" % \
     (yesterday.year, yesterday.month, yesterday.day)
   if not os.path.exists(logfile): return
   
@@ -64,13 +66,13 @@ def main():
       details[info['hash']]['title']=info['title']
   
   # output files
-  json_file = "/var/log/gogogon/ranks/%04d-%02d-%02d.json" % \
+  json_file = output_directory + "/%04d-%02d-%02d.json" % \
     (yesterday.year, yesterday.month, yesterday.day)
-  csv_file = "/var/log/gogogon/ranks/%04d-%02d-%02d.csv" % \
+  csv_file = output_directory + "/%04d-%02d-%02d.csv" % \
     (yesterday.year, yesterday.month, yesterday.day)
-  domain_json_file = "/var/log/gogogon/ranks/domain-%04d-%02d-%02d.json" % \
+  domain_json_file = output_directory + "/domain-%04d-%02d-%02d.json" % \
     (yesterday.year, yesterday.month, yesterday.day)
-  domain_csv_file = "/var/log/gogogon/ranks/domain-%04d-%02d-%02d.csv" % \
+  domain_csv_file = output_directory + "/domain-%04d-%02d-%02d.csv" % \
     (yesterday.year, yesterday.month, yesterday.day)
   
   # sort by global clicks descending

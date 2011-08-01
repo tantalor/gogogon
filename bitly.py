@@ -14,8 +14,9 @@ def info(hashes):
     url="http://api.bitly.com/v3/info",
     hashes=hashes,
   )
-  for item in response['data']['info']:
-    yield item
+  if response:
+    for item in response['data']['info']:
+      yield item
 
 def clicks_by_day(hashes, days=5):
   """Yields daily clicks for each given hash."""  
@@ -24,8 +25,9 @@ def clicks_by_day(hashes, days=5):
     hashes=hashes,
     days=days,
   )
-  for item in response['data']['clicks_by_day']:
-    yield item
+  if response: 
+    for item in response['data']['clicks_by_day']:
+      yield item
 
 def send_to_bitly(url, hashes, **kwargs):
   params = [

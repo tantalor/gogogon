@@ -77,7 +77,7 @@ def main():
   if options.use_agency_domain:
     write_agency_domain_files(records, output_dir, ymd)
 
-def write_output_files(records, output_dir, ymd)
+def write_output_files(records, output_dir, ymd):
 
   # output files
   json_file = os.path.join(output_dir, "%s.json" % ymd)
@@ -114,7 +114,7 @@ def write_agency_domain_files(records, output_dir, ymd):
 
   json_file = os.path.join(output_dir, "domain-%s.json" % ymd)
   csv_file = os.path.join(output_dir, "domain-%s.csv" % ymd)
-  json_latest_file = os.path.join(output_dir, "domain-latest.json")
+  json_latest_file = os.path.join(output_dir, "latest-domain.json")
 
   # write json
   json.dump(domain_records, file(json_file, 'w'))

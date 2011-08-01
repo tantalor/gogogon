@@ -11,34 +11,34 @@ import csv
 import optparse
 
 GROUPSIZE = 10
-file_name_prefix = "/var/log/gogogon/consumer.log"
-default_output_directory = "/var/log/gogogon/ranking"
+LOG_INPUT_DIR = "/var/log/gogogon"
+LOG_INPUT_PREFIX = os.path.join(LOG_INPUT_DIR, "consumer.log")
+RANKS_OUTPUT_DIR = os.path.join(LOG_INPUT_DIR, "ranks")
 
 def main():
   today = datetime.datetime.today()
   one_day = datetime.timedelta(1)
   yesterday = today - one_day
-  iso_date = "%04d-%02d-%02d" % \
-    (yesterday.year, yesterday.month, yesterday.day)
-  # Use yesterday's log by default
-  logfile = file_name_prefix + "." + iso_date
-
+  ymd = "%04d-%02d-%02d" % (yesterday.year, yesterday.month, yesterday.day)
+  
+  # find yesterday's log
+  logfile = os.path.join(LOG_INPUT_DIR, "consumer.log.%s" % ymd)
   # But allow this to be overridden
   parser = optparse.OptionParser()
   parser.add_option('-f', '--file', dest="logfile", 
                     default=logfile)
-  parser.add_option('-o', '--output-directory', dest="output_directory", 
-                    default= default_output_directory)
+  parser.add_option('-o', '--output-directory', dest="output_dir", 
+                    default= RANKS_OUTPUT_DIR)
   parser.add_option('-a', '--agency', dest="use_agency_domain", 
                     default=False)
   options, remainder = parser.parse_args()
   logfile = options.logfile
-  output_directory = options.output_directory
+  output_dir = options.output_dir
             
   if not os.path.exists(logfile): 
       raise RuntimeError('Log file does not exist: ' + logfile)
-  if not os.path.exists(output_directory):
-      raise RuntimeError('Output directory does not exist: ' + output_directory)
+  if not os.path.exists(output_dir):
+      raise RuntimeError('Output directory does not exist: ' + output_dir)
   
   # sort and uniq the log
   cmd = 'grep INFO %s | cut -f 4- -d " " | sort | uniq -c' % logfile
@@ -59,22 +59,34 @@ def main():
   for i in xrange(1+len(details)/GROUPSIZE):
     hashes = details.keys()[i*GROUPSIZE:i*GROUPSIZE+GROUPSIZE]
     # lookup titles
-    for info in bitly.info(*hashes):
-      if not info['title']: continue
-      details[info['hash']]['title']=info['title']
+    for item in bitly.info(hashes=hashes):
+      if not item['title']: continue
+      details[item['hash']]['title']=item['title']
+    # lookup yesterday's clicks
+    for item in bitly.clicks_by_day(hashes=hashes, days=2):
+      clicks = int(item['clicks'][1]['clicks'])
+      if clicks > details[item['hash']]['global_clicks']:
+        details[item['hash']]['global_clicks'] = clicks
   
-  # output files
-  json_file = output_directory + "/" + iso_date + ".json"
-  csv_file = output_directory + "/" + iso_date + ".csv"
-
   
   # sort by global clicks descending
   records = details.values()
-  records.sort(key=lambda x: x["global_clicks"], reverse=True)  
+  records.sort(key=lambda x: long(x["global_clicks"]), reverse=True)  
 
+  write_output_files(records, output_dir, ymd)
+  if options.use_agency_domain:
+    write_agency_domain_files(records, output_dir, ymd)
+
+def write_output_files(records, output_dir, ymd)
+
+  # output files
+  json_file = os.path.join(output_dir, "%s.json" % ymd)
+  csv_file = os.path.join(output_dir, "%s.csv" % ymd)
+  json_latest_file = os.path.join(output_dir, "latest.json")
 
   # write json
   json.dump(records, file(json_file, 'w'))
+  json.dump(records[:10], file(json_latest_file, 'w'))
   
   # write csv
   csv_writer = csv.writer(file(csv_file, 'w'))
@@ -89,11 +101,8 @@ def main():
       record['global_hash'],
     ])
 
-  if options.use_agency_domain:
-    write_agency(records, output_directory, iso_date)
 
-
-def write_agency(records, output_directory, iso_date):
+def write_agency_domain_files(records, output_dir, ymd):
   domains = dict()
   for record in records:
     domain = domains.setdefault(record['agency'],
@@ -103,11 +112,13 @@ def write_agency(records, output_directory, iso_date):
   domain_records = domains.values()
   domain_records.sort(key=lambda x: x["global_clicks"], reverse=True)  
 
-  json_file = output_directory + "/domain-" + iso_date + ".json"
-  csv_file = output_directory + "/domain-" + iso_date + ".csv"
+  json_file = os.path.join(output_dir, "domain-%s.json" % ymd)
+  csv_file = os.path.join(output_dir, "domain-%s.csv" % ymd)
+  json_latest_file = os.path.join(output_dir, "domain-latest.json")
 
   # write json
   json.dump(domain_records, file(json_file, 'w'))
+  json.dump(domain_records[:10], file(json_latest_file, 'w'))
 
   # write csv
   csv_writer = csv.writer(file(csv_file, 'w'))

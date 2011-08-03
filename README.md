@@ -40,12 +40,25 @@ Requirements
  * [supervisord 3.0a10](http://supervisord.org/)
  * [pycurl 7.19.0](http://pycurl.sourceforge.net/)
 
+This distribution comes with support for pip and virtualenv in order
+to isolate the python packages in a virtual environment. See
+http://www.saltycrane.com/blog/2009/05/notes-using-pip-and-virtualenv-django/
+for more deail on how and why this is a good idea.
+
+Run the 'bootstrap.sh' command to get the virtual environment set up:
+
+virtualenv --no-site-packages --distribute ve
+source ve/bin/activate
+pip install -r pip-requirements.txt
+
 Licence
 =======
 
 (The MIT License)
 
 Copyright © 2011 Measured Voice
+
+Copyright © 2011 Blackstone Technology Group
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the ‘Software’), to deal in

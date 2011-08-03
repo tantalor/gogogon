@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os
 import sys
@@ -7,14 +7,21 @@ import logging
 import logging.handlers
 import signal
 import pycurl
+import optparse
 
 def main():
   global logger
   
+  parser = optparse.OptionParser()
+  parser.add_option('-f', '--file', dest="use_log_file", 
+                    default='/var/log/gogogon/consumer.log')
+  options, remainder = parser.parse_args()
+  log_file = options.use_log_file
+    
   formatter = logging.Formatter('%(process)d %(levelname)s %(created)d %(message)s', '%Y-%m-%d %H:%M:%S')
 
   handler = logging.handlers.TimedRotatingFileHandler(
-    '/var/log/gogogon/consumer.log', 'midnight', 1, backupCount=3
+    log_file, 'midnight', 1, backupCount=3
   )
   handler.setFormatter(formatter)
 

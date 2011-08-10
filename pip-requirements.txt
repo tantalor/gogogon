@@ -1,4 +1,4 @@
 distribute
-pycurl
+file:../pycurl
 yolk
 supervisor

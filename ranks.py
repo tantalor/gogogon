@@ -61,9 +61,11 @@ def main():
     # lookup titles
     for item in bitly.info(hashes=hashes):
       if not item['title']: continue
+      if 'title' not in item: continue
       details[item['hash']]['title']=item['title']
     # lookup yesterday's clicks
     for item in bitly.clicks_by_day(hashes=hashes, days=2):
+      if 'clicks' not in item: continue
       clicks = int(item['clicks'][1]['clicks'])
       if clicks > details[item['hash']]['global_clicks']:
         details[item['hash']]['global_clicks'] = clicks
@@ -92,7 +94,7 @@ def write_output_files(records, output_dir, ymd):
   csv_writer = csv.writer(file(csv_file, 'w'))
   csv_writer.writerow(["Long URL", "Page Title", "Clicks", "Agency Domain", "Global hash"])
   for record in records:
-    if not 'title' in record: continue
+    if not 'title' in record or not record['title']: continue
     csv_writer.writerow([
       record['u'],
       record['title'].encode('utf8'),

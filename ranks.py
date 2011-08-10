@@ -9,6 +9,7 @@ from domain import domain
 import json
 import csv
 import optparse
+from csv_unicode_writer import UnicodeWriter
 
 GROUPSIZE = 10
 LOG_INPUT_DIR = "/var/log/gogogon"
@@ -73,11 +74,11 @@ def main():
   records = details.values()
   records.sort(key=lambda x: x["global_clicks"], reverse=True)  
 
-  write_output_files(records, output_dir, ymd)
+  write_output_files(records, ymd, output_dir)
   if options.use_agency_domain:
     write_agency_domain_files(records, output_dir, ymd)
 
-def write_output_files(records, output_dir, ymd):
+def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
 
   # output files
   json_file = os.path.join(output_dir, "%s.json" % ymd)
@@ -86,17 +87,19 @@ def write_output_files(records, output_dir, ymd):
 
   # write json
   json.dump(records, file(json_file, 'w'))
-  json.dump(records[:10], file(json_latest_file, 'w'))
+  if latest:
+    json.dump(records[:10], file(json_latest_file, 'w'))
   
   # write csv
-  csv_writer = csv.writer(file(csv_file, 'w'))
+  csv_writer = UnicodeWriter(file(csv_file, 'w'))
   csv_writer.writerow(["Long URL", "Page Title", "Clicks", "Agency Domain", "Global hash"])
   for record in records:
     if not 'title' in record or not record['title']: continue
+    url = record['u'] if type(record['u']) == unicode else record['u'].decode('utf8')
     csv_writer.writerow([
-      record['u'],
-      record['title'].encode('utf8'),
-      record['global_clicks'],
+      url,
+      record['title'],
+      str(record['global_clicks']),
       record['agency'],
       record['global_hash'],
     ])

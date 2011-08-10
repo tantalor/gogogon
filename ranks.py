@@ -73,11 +73,11 @@ def main():
   records = details.values()
   records.sort(key=lambda x: x["global_clicks"], reverse=True)  
 
-  write_output_files(records, output_dir, ymd)
+  write_output_files(records, ymd, output_dir)
   if options.use_agency_domain:
     write_agency_domain_files(records, output_dir, ymd)
 
-def write_output_files(records, output_dir, ymd):
+def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
 
   # output files
   json_file = os.path.join(output_dir, "%s.json" % ymd)
@@ -86,7 +86,8 @@ def write_output_files(records, output_dir, ymd):
 
   # write json
   json.dump(records, file(json_file, 'w'))
-  json.dump(records[:10], file(json_latest_file, 'w'))
+  if latest:
+    json.dump(records[:10], file(json_latest_file, 'w'))
   
   # write csv
   csv_writer = csv.writer(file(csv_file, 'w'))

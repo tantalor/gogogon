@@ -95,8 +95,9 @@ def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
   csv_writer.writerow(["Long URL", "Page Title", "Clicks", "Agency Domain", "Global hash"])
   for record in records:
     if not 'title' in record or not record['title']: continue
+    url = record['u'] if type(record['u']) == unicode else record['u'].decode('utf8')
     csv_writer.writerow([
-      record['u'],
+      url,
       record['title'],
       str(record['global_clicks']),
       record['agency'],

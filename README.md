@@ -39,6 +39,7 @@ Requirements
  * [python 2.6](http://www.python.org/download/releases/2.6/)
  * [supervisord 3.0a10](http://supervisord.org/)
  * [pycurl 7.19.0](http://pycurl.sourceforge.net/)
+ * [pyYAML 3.10](http://pyyaml.org/)
 
 This distribution comes with support for pip and virtualenv in order
 to isolate the python packages in a virtual environment. See

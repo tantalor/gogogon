@@ -52,6 +52,14 @@ virtualenv --no-site-packages --distribute ve
 source ve/bin/activate
 pip install -r pip-requirements.txt
 
+To start supervisord within the virtual environment you may
+need to start a subshell  command of the form:
+
+ (. ve/bin/activate; export PATH=$PATH:.; supervisord -c supervisord.conf )
+
+This will activate the virtual environment in the subshell, add the CWD to
+the path, and start supervisord.
+
 Licence
 =======
 

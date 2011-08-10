@@ -1,0 +1,17 @@
+%YAML 1.2
+---
+# This configuration is a sample. Copy it into the
+# conf subdirectory as conf/listner.yaml
+# and change the settings for your system as needed.
+server: 
+  host: example.local
+  username: foo
+  password: verybadpassword********
+
+message: 
+  from_addr: nobody@example.com
+  to_addrs: someone@example.net
+  body:
+    - This is a test
+    - of the listener
+

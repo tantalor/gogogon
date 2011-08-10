@@ -60,7 +60,6 @@ def main():
     hashes = details.keys()[i*GROUPSIZE:i*GROUPSIZE+GROUPSIZE]
     # lookup titles
     for item in bitly.info(hashes=hashes):
-      if not item['title']: continue
       if 'title' not in item: continue
       details[item['hash']]['title']=item['title']
     # lookup yesterday's clicks
@@ -70,10 +69,9 @@ def main():
       if clicks > details[item['hash']]['global_clicks']:
         details[item['hash']]['global_clicks'] = clicks
   
-  
   # sort by global clicks descending
   records = details.values()
-  records.sort(key=lambda x: long(x["global_clicks"]), reverse=True)  
+  records.sort(key=lambda x: x["global_clicks"], reverse=True)  
 
   write_output_files(records, output_dir, ymd)
   if options.use_agency_domain:

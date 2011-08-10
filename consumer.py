@@ -11,7 +11,7 @@ import optparse
 
 def main():
   global logger
-
+  
   parser = optparse.OptionParser()
   parser.add_option('-f', '--file', dest="use_log_file", 
                     default='/var/log/gogogon/consumer.log')

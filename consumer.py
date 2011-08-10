@@ -33,9 +33,7 @@ def main():
   
   def recv(line):
     if line.strip():
-      data = json.loads(line)
-      globalhash = data.get('g')
-      url = data.get('u')
+      (globalhash, url) = get_fields(line)
       logger.info("%s %s" % (globalhash, url))
 
   logger.debug("starting up")
@@ -43,6 +41,12 @@ def main():
   curl.setopt(pycurl.URL, "http://bitly.measuredvoice.com/usa.gov")  
   curl.setopt(pycurl.WRITEFUNCTION, recv)  
   curl.perform()
+
+def get_fields(line):  
+  data = json.loads(line)
+  globalhash = data.get('g')
+  url = data.get('u')
+  return (globalhash, url)
 
 def shutdown(*args):
   global logger

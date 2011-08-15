@@ -39,6 +39,7 @@ Requirements
  * [python 2.6](http://www.python.org/download/releases/2.6/)
  * [supervisord 3.0a10](http://supervisord.org/)
  * [pycurl 7.19.0](http://pycurl.sourceforge.net/)
+ * [pyYAML 3.10](http://pyyaml.org/)
 
 This distribution comes with support for pip and virtualenv in order
 to isolate the python packages in a virtual environment. See
@@ -47,9 +48,17 @@ for more deail on how and why this is a good idea.
 
 Run the 'bootstrap.sh' command to get the virtual environment set up:
 
-virtualenv --no-site-packages --distribute ve
-source ve/bin/activate
-pip install -r pip-requirements.txt
+    virtualenv --no-site-packages --distribute ve
+    source ve/bin/activate
+    pip install -r pip-requirements.txt
+
+To start supervisord within the virtual environment you may
+need to start a subshell  command of the form:
+
+    (. ve/bin/activate; export PATH=$PATH:.; supervisord -c supervisord.conf )
+
+This will activate the virtual environment in the subshell, add the CWD to
+the path, and start supervisord.
 
 Licence
 =======

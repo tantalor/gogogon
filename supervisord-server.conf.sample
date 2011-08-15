@@ -1,0 +1,18 @@
+# This configuration is a sample. Copy it into the
+# conf subdirectory as conf/supervisord-server.conf
+# and change the username, password, and path
+# settings for your system as needed.
+
+[rpcinterface:supervisor]
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+[unix_http_server]
+file = /tmp/supervisor.sock
+username = supervisor
+password =  e61c23iqewrgfaseeoeo4nsdfawg39094g34g34g831b8f43c76be8dc8fffefae
+
+[supervisorctl]
+serverurl = unix:///tmp/supervisor.sock
+prompt = mysupervisor
+username = supervisor
+password =  e61c23iqewrgfaseeoeo4nsdfawg39094g34g34g831b8f43c76be8dc8fffefae

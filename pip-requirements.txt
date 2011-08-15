@@ -1,4 +1,5 @@
 distribute
-pycurl
-yolk
+-e git://github.com/blackstonetech/pycurl.git#egg=pycurl
 supervisor
+PyYAML
+yolk

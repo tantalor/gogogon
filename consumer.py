@@ -16,7 +16,7 @@ def main():
   options, remainder = parser.parse_args()
   log_file = options.use_log_file
     
-  formatter = logging.Formatter('%(process)d %(levelname)s %(created)d %(message)s', '%Y-%m-%d %H:%M:%S')
+  formatter = logging.Formatter('%(process)d %(levelname)s %(asctime)s %(message)s', '%Y-%m-%d %H:%M:%S')
 
   handler = logging.handlers.TimedRotatingFileHandler(
     log_file, 'midnight', 1, backupCount=3

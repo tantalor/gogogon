@@ -10,8 +10,6 @@ import pycurl
 import optparse
 
 def main():
-  global logger
-  
   parser = optparse.OptionParser()
   parser.add_option('-f', '--file', dest="use_log_file", 
                     default='/var/log/gogogon/consumer.log')
@@ -28,6 +26,11 @@ def main():
   logger = logging.getLogger()
   logger.addHandler( handler )
   logger.setLevel(logging.DEBUG)
+  
+  def shutdown(*args):
+    logger.debug("shutting down")
+    logger.flush()
+    sys.exit()
   
   signal.signal(signal.SIGINT, shutdown)
   
@@ -47,13 +50,6 @@ def get_fields(line):
   globalhash = data.get('g')
   url = data.get('u')
   return (globalhash, url)
-
-def shutdown(*args):
-  global logger
-
-  logger.debug("shutting down")
-  logger.flush()
-  sys.exit()
 
 if __name__ == '__main__':
   main()

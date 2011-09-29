@@ -30,7 +30,6 @@ def main():
   
   def shutdown(*args):
     logger.debug("shutting down")
-    logger.flush()
     sys.exit()
   
   signal.signal(signal.SIGINT, shutdown)

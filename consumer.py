@@ -26,6 +26,7 @@ def main():
   logger = logging.getLogger()
   logger.addHandler( handler )
   logger.setLevel(logging.DEBUG)
+  logger.debug("starting up")
   
   def shutdown(*args):
     logger.debug("shutting down")
@@ -39,11 +40,15 @@ def main():
       (globalhash, url) = get_fields(line)
       logger.info("%s %s" % (globalhash, url))
 
-  logger.debug("starting up")
-  curl = pycurl.Curl()
-  curl.setopt(pycurl.URL, "http://bitly.measuredvoice.com/usa.gov")  
-  curl.setopt(pycurl.WRITEFUNCTION, recv)  
-  curl.perform()
+  while 1:
+    try:
+      logger.debug("starting pycurl")
+      curl = pycurl.Curl()
+      curl.setopt(pycurl.URL, "http://bitly.measuredvoice.com/usa.gov")  
+      curl.setopt(pycurl.WRITEFUNCTION, recv)  
+      curl.perform()
+    except Exception, e:
+      logger.error(e)
 
 def get_fields(line):  
   data = json.loads(line)

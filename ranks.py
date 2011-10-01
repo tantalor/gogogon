@@ -42,7 +42,7 @@ def main():
       raise RuntimeError('Output directory does not exist: ' + output_dir)
   
   # sort and uniq the log
-  cmd = 'grep INFO %s | cut -f 4- -d " " | sort | uniq -c' % logfile
+  cmd = 'grep INFO %s | cut -f 5- -d " " | sort | uniq -c' % logfile
   pipe = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
   
   # collect up global hashes and click counts

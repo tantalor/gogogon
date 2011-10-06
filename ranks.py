@@ -10,6 +10,7 @@ import json
 import csv
 import optparse
 from csv_unicode_writer import UnicodeWriter
+import logging
 
 GROUPSIZE = 10
 LOG_INPUT_DIR = "/var/log/gogogon"
@@ -17,6 +18,15 @@ LOG_INPUT_PREFIX = os.path.join(LOG_INPUT_DIR, "consumer.log")
 RANKS_OUTPUT_DIR = os.path.join(LOG_INPUT_DIR, "ranks")
 
 def main():
+  # setup logger
+  formatter = logging.Formatter('%(process)d %(levelname)s %(asctime)s %(message)s', '%Y-%m-%d %H:%M:%S')
+  handler = logging.FileHandler("/var/log/gogogon/ranks.log")
+  handler.setFormatter(formatter)
+  logger = logging.getLogger()
+  logger.addHandler(handler)
+  logger.setLevel(logging.DEBUG)
+  logger.debug("starting up")
+
   today = datetime.datetime.today()
   one_day = datetime.timedelta(1)
   yesterday = today - one_day
@@ -74,9 +84,11 @@ def main():
   records = details.values()
   records.sort(key=lambda x: x["global_clicks"], reverse=True)  
 
+  logger.debug("writing output files")
   write_output_files(records, ymd, output_dir)
   if options.use_agency_domain:
     write_agency_domain_files(records, output_dir, ymd)
+  logger.debug("shutting down")
 
 def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
 

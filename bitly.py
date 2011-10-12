@@ -4,6 +4,7 @@ import httplib
 import urllib
 import json
 import unittest
+import sys
 
 API_USER = 'gogogon'
 API_KEY  = 'R_cbcba050cbd86f7b2fb2a6b3e34f7c4c'
@@ -42,7 +43,10 @@ def send_to_bitly(url, hashes, **kwargs):
   query = urllib.urlencode(params)
   fh = urllib.urlopen("%s?%s" % (url, query))
   content = fh.read()
-  return json.loads(content)
+  try:
+    return json.loads(content)
+  except ValueError, e:
+    sys.stderr.write("%s\n" % e)
 
 class TestDomain(unittest.TestCase):
   def testInfo(self):

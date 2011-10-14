@@ -98,9 +98,9 @@ def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
   json_latest_file = os.path.join(output_dir, "latest.json")
 
   # write json
-  file(json_file, 'w').write(json.serialize(records))
+  file(json_file, 'w').write(anyjson.serialize(records))
   if latest:
-    json.dump(records[:10], file(json_latest_file, 'w'))
+    file(json_latest_file, 'w').write(anyjson.serialize(records[:10]))
   
   # write csv
   csv_writer = UnicodeWriter(file(csv_file, 'w'))
@@ -110,7 +110,7 @@ def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
     if type(record['u']) == unicode:
       url = record['u']
     else:
-      record['u'].decode('utf8')
+      url = record['u'].decode('utf8')
     csv_writer.writerow([
       url,
       record['title'],

@@ -4,7 +4,7 @@ import sys
 import os
 import re
 import urllib2
-import json
+import anyjson
 from domain import domain
 import bitly
 from datetime import date, timedelta
@@ -65,7 +65,7 @@ def read_data(link):
   for line in lines:
     if line.strip():
       try:
-        data = json.loads(line)
+        data = anyjson.deserialize(line)
         global_hash = data.get('g')
         url = data.get('u')
         yield (global_hash, url)

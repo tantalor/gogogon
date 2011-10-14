@@ -2,7 +2,7 @@
 
 import os
 import sys
-import json
+import anyjson
 import logging
 import logging.handlers
 import signal
@@ -50,7 +50,7 @@ def main():
       logger.error(e)
 
 def get_fields(line):  
-  data = json.loads(line)
+  data = anyjson.deserialize(line)
   globalhash = data.get('g')
   url = data.get('u')
   return (globalhash, url)

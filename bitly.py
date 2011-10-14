@@ -2,7 +2,7 @@
 
 import httplib
 import urllib
-import json
+import anyjson
 import unittest
 import sys
 
@@ -44,7 +44,7 @@ def send_to_bitly(url, hashes, **kwargs):
   fh = urllib.urlopen("%s?%s" % (url, query))
   content = fh.read()
   try:
-    return json.loads(content)
+    return anyjson.deserialize(content)
   except ValueError, e:
     sys.stderr.write("%s\n" % e)
 

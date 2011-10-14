@@ -6,7 +6,7 @@ import sys
 import subprocess
 import bitly
 from domain import domain
-import json
+import anyjson
 import csv
 import optparse
 from csv_unicode_writer import UnicodeWriter
@@ -98,7 +98,7 @@ def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
   json_latest_file = os.path.join(output_dir, "latest.json")
 
   # write json
-  json.dump(records, file(json_file, 'w'))
+  file(json_file, 'w').write(json.serialize(records))
   if latest:
     json.dump(records[:10], file(json_latest_file, 'w'))
   
@@ -107,7 +107,10 @@ def write_output_files(records, ymd, output_dir=RANKS_OUTPUT_DIR, latest=True):
   csv_writer.writerow(["Long URL", "Page Title", "Clicks", "Agency Domain", "Global hash"])
   for record in records:
     if not 'title' in record or not record['title']: continue
-    url = record['u'] if type(record['u']) == unicode else record['u'].decode('utf8')
+    if type(record['u']) == unicode:
+      url = record['u']
+    else:
+      record['u'].decode('utf8')
     csv_writer.writerow([
       url,
       record['title'],
@@ -132,8 +135,8 @@ def write_agency_domain_files(records, output_dir, ymd):
   json_latest_file = os.path.join(output_dir, "latest-domain.json")
 
   # write json
-  json.dump(domain_records, file(json_file, 'w'))
-  json.dump(domain_records[:10], file(json_latest_file, 'w'))
+  anyjson.dump(domain_records, file(json_file, 'w'))
+  anyjson.dump(domain_records[:10], file(json_latest_file, 'w'))
 
   # write csv
   csv_writer = csv.writer(file(csv_file, 'w'))

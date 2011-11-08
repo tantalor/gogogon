@@ -37,7 +37,8 @@ def main():
   def recv(line):
     if line.strip():
       (globalhash, url) = get_fields(line)
-      logger.info("%s %s" % (globalhash, url))
+      if '.gif' not in url and '.png' not in url:
+        logger.info("%s %s" % (globalhash, url))
 
   while 1:
     try:

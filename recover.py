@@ -34,15 +34,16 @@ def main():
     if matches:
       link = ARCHIVE_URL+matches[0]
       for (global_hash, url) in read_data(link):
-        if global_hash not in details:
-          details[global_hash] = dict(
-            u=url,
-            global_clicks=1,
-            agency=domain(url),
-            global_hash=global_hash,
-          )
-        else:
-          details[global_hash]['global_clicks'] += 1
+        if '.png' not in url and '.gif' not in url:
+	  if global_hash not in details:
+	    details[global_hash] = dict(
+              u=url,
+              global_clicks=1,
+              agency=domain(url),
+              global_hash=global_hash,
+            )
+          else:
+            details[global_hash]['global_clicks'] += 1
   
   print "getting titles"
   # grab hashes in groups of GROUPSIZE size

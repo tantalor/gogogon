@@ -26,7 +26,7 @@ def clicks_by_day(hashes, days=5):
     hashes=hashes,
     days=days,
   )
-  if response: 
+  if response and response['data'] and response['data']['clicks_by_day']: 
     for item in response['data']['clicks_by_day']:
       yield item
 

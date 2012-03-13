@@ -30,22 +30,26 @@ def main():
   today = datetime.datetime.today()
   one_day = datetime.timedelta(1)
   yesterday = today - one_day
-  ymd = "%04d-%02d-%02d" % (yesterday.year, yesterday.month, yesterday.day)
+  yesterday_ymd = "%04d-%02d-%02d" % (yesterday.year, yesterday.month, yesterday.day)
   
-  # find yesterday's log
-  logfile = os.path.join(LOG_INPUT_DIR, "consumer.log.%s" % ymd)
   # But allow this to be overridden
   parser = optparse.OptionParser()
-  parser.add_option('-f', '--file', dest="logfile", 
-                    default=logfile)
+  parser.add_option('-f', '--file', dest="logfile")
   parser.add_option('-o', '--output-directory', dest="output_dir", 
                     default= RANKS_OUTPUT_DIR)
   parser.add_option('-a', '--agency', dest="use_agency_domain", 
                     default=False)
+  parser.add_option('-d', '--date', dest="ymd", default=yesterday_ymd)
+
   options, remainder = parser.parse_args()
+  ymd = options.ymd
   logfile = options.logfile
   output_dir = options.output_dir
-            
+  
+  if not logfile:          
+    # default log
+    logfile = os.path.join(LOG_INPUT_DIR, "consumer.log.%s" % ymd)
+  
   if not os.path.exists(logfile): 
       raise RuntimeError('Log file does not exist: ' + logfile)
   if not os.path.exists(output_dir):
